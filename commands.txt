@@ -3,3 +3,9 @@ saving $->
 ls -a 
 cd 
 ls 
+ls 
+ls 
+lsa 
+la -b 
+ls 
+ls -a 
