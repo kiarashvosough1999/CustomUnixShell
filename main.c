@@ -35,7 +35,7 @@ static void seperateCommands(char* command);
 static void waitToTerminate(int n);
 static char* ignoreWhiteSpaces(char* space);
 
-static char line[1024];
+static char line[512];
 static int number_of_procces = 0;
  
 int main( int argc, char *argv[] )
@@ -51,15 +51,19 @@ int main( int argc, char *argv[] )
     while (1) {
         /* Print the command prompt */
         char cwd[1024];
-        // printf("%s\n", );
         getcwd(cwd,sizeof(cwd));
         cwd[0] = '~';
         printf("%s%s $-> %s",color_yellow,cwd,color_white);
         fflush(NULL);
         
-        /* Read a command line */
-        if (!fgets(line, 1024, stdin))
-            return 0;
+        /* 
+           Read a command line
+        */
+        if (!fgets(line, 512, stdin)){
+            fprintf(stderr, "read command error: %s\n", strerror(errno));
+            exit(0);
+        }
+            
  
         /*
            'input' indicates that if we have more than one command, it will hold last command procces pipe read end
@@ -98,7 +102,7 @@ static void executeBatchFile(char* fileName){
     strcat(fullFileName, ".txt");
     
     fp = fopen(fullFileName, "r");
-    while (fgets(line, 1024, fp) != NULL) {
+    while (fgets(line, 512, fp) != NULL) {
         /* Print the command prompt */
         printf("%s\n$-> %s\n",color_green,color_white);
         fflush(NULL);
@@ -238,7 +242,9 @@ static int executeCommand(int input_From_LastCommand, int is_first_command, int 
  
 static char* ignoreWhiteSpaces(char* space)
 {
-    while (isspace(*space)) ++space;
+    while (isspace(*space)){
+        ++space;
+    } 
     return space;
 }
  
